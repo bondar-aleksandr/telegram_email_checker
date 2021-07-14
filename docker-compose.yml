@@ -1,0 +1,16 @@
+version: '3.3'
+services:
+  tg_cctv:
+    container_name: tg_cctv
+    # to run from ready image, specify: image: abondar1985/tg_cctv
+    # remove if deploy from ready image
+    build:
+      context: ./src
+    # remove if deploy from ready image
+    command: python main.py
+    restart: unless-stopped
+    environment:
+      TZ: Europe/Kiev
+    volumes:
+    - ./log:/app/log
+    - ./config:/app/config
