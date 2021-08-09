@@ -268,5 +268,9 @@ class ImapWorker:
                     logging.error(f'{LOG_PREFIX["imap_conn"]} connection to IMAP server lost!')
                     raise ConnError('connection to IMAP server lost!')
 
+                except aioimaplib.Abort as e:
+                    logging.error(f'{LOG_PREFIX["imap_conn"]} server error: {e}')
+                    raise ServerError(f'Server error: {e}')
+
             # Close IMAP session gracefully to avoid session timeout
             await self.disconnect()
