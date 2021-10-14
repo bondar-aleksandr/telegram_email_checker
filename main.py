@@ -10,7 +10,7 @@ import aiogram
 import aiohttp
 import sys
 import signal
-from config import LOG_FILE_SIZE, LOG_PREFIX, LOGGING_LEVEL, RETRY_HISTORY, MAX_INTERVAL, RESTART_SUPPRESS
+from config import LOG_FILE_SIZE, LOG_PREFIX, LOGGING_LEVEL, RESTART_RETRY_HISTORY, RESTART_MAX_INTERVAL, RESTART_SUPPRESS
 import logging
 from logging.handlers import RotatingFileHandler
 
@@ -80,7 +80,7 @@ def exception_handler(loop: asyncio.AbstractEventLoop, context: dict):
         loop.create_task(shutdown(loop=loop))
 
 
-async def supervisor(func, retry_history=RETRY_HISTORY, max_interval=MAX_INTERVAL):
+async def supervisor(func, retry_history=RESTART_RETRY_HISTORY, max_interval=RESTART_MAX_INTERVAL):
     start_times = collections.deque([float('-inf')], maxlen=retry_history)
     while True:
         start_times.append(time.monotonic())

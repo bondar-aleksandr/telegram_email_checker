@@ -7,7 +7,7 @@ from email.header import decode_header
 from email.message import Message
 import logging
 from config import FROM, MAIL_RETENTION_DAYS, CLEANUP_PERIOD, IMAP_SESSION_DURATION, \
-    LOG_PREFIX, INBOX_FOLDER, CLEANUP
+    LOG_PREFIX, INBOX_FOLDER, CLEANUP, MESSAGE_PL_MAINTYPE
 from utils.tg_api import tg_send_media, tg_send_message
 from utils import normalize_header
 import datetime
@@ -198,7 +198,7 @@ class ImapWorker:
                             text = part.get_payload(decode=True).decode()
                         await tg_send_message(text=text)
 
-                    if part.get_content_maintype() == 'image':
+                    if part.get_content_maintype() == MESSAGE_PL_MAINTYPE:
                         pl = part.get_payload(decode=True)
                         await tg_send_media(pl)
             # mark message as Seen
