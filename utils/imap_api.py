@@ -180,15 +180,15 @@ class ImapWorker:
                 element: seq_msg
 
                 # getting attributes
-                attributes = dict()
-                attributes['from'] = normalize_header(element.msg['Return-path'])
-                attributes['date'] = element.msg['Date']
-                subject = decode_header(element.msg['Subject'])[0][0]
-                if isinstance(subject, bytes):
+                # attributes = dict()
+                # attributes['from'] = normalize_header(element.msg['Return-path'])
+                # attributes['date'] = element.msg['Date']
+                # subject = decode_header(element.msg['Subject'])[0][0]
+                # if isinstance(subject, bytes):
                     # for cases, when subject is base64 encoded
-                    subject = subject.decode()
-                attributes['subject'] = subject
-                await tg_send_message(attributes=attributes)
+                    # subject = subject.decode()
+                # attributes['subject'] = subject
+                # await tg_send_message(attributes=attributes)
 
                 for part in element.msg.walk():
                     part: Message
