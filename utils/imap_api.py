@@ -225,6 +225,8 @@ class ImapWorker:
             for ex in exc:
                 if isinstance(ex, asyncio.exceptions.TimeoutError):
                     raise ConnError('Timeout occurred!')
+                elif isinstance(ex,aioimaplib.Abort):
+                    raise ServerError('unexpected tagged response with pending sync command')
                 elif isinstance(ex, ServerError):
                     raise ex
 
