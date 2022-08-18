@@ -202,8 +202,12 @@ class ImapWorker:
                         pl = part.get_payload(decode=True)
                         await tg_send_media(pl)
             # mark message as Seen
-            await self.connection.store(element.seq, '+FLAGS', '\\Seen')
-            logging.info(f'{LOG_PREFIX["search_new"]} processing complete!')
+            r = await self.connection.store(element.seq, '+FLAGS', '(\\Seen)')
+            if r.result == 'BAD':
+                logging.error(f'{LOG_PREFIX["search_new"]} error setting "Seen" flag!')
+                raise ServerError('Error during store operation!')
+            else:
+                logging.info(f'{LOG_PREFIX["search_new"]} processing complete!')
 
 
     async def _process_old_message(self, seq_dates_list: List[NamedTuple], sender: str) -> None:
@@ -213,7 +217,10 @@ class ImapWorker:
             element: seq_date
             delta = current_date - element.date
             if delta.days > MAIL_RETENTION_DAYS:
-                await self.connection.store(element.seq, '+FLAGS', '\\Deleted')
+                r = await self.connection.store(element.seq, '+FLAGS', '(\\Deleted)')
+                if r.result == 'BAD':
+                    logging.error(f'{LOG_PREFIX["remove_old"]} error setting "Deleted" flag!')
+                    raise ServerError('Error during store operation!')
                 deleted_count += 1
         await self.connection.expunge()
         logging.info(f'{LOG_PREFIX["remove_old"]} {deleted_count} messages deleted from {sender}!')
